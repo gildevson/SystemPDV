@@ -1,0 +1,34 @@
+﻿
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+
+# .NET artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Database
+*.mdf
+*.ldf
+*.dbmdl
+
+# Configuration
+appsettings.Development.json
+*.env
+
+# Node/Angular (caso use front-end junto)
+node_modules/
+dist/
+.angular/

@@ -1,0 +1,10 @@
+CREATE TABLE Usuarios (
+    -- Altera o tipo de Id para UNIQUEIDENTIFIER e usa um valor padrão GUID
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(), 
+    Nome NVARCHAR(200) NOT NULL,
+    Email NVARCHAR(200) NOT NULL UNIQUE, -- Recomenda-se ser UNIQUE
+    Senha NVARCHAR(500) NOT NULL,
+    DataCriacao DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+
