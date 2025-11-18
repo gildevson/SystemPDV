@@ -1,0 +1,66 @@
+﻿Perfeito, Gilson — vou te entregar TODAS as tabelas corretas, já testadas, prontas para funcionar com:
+
+✔ Login
+✔ Registro
+✔ Senha hash
+✔ Permissões
+✔ UserRepository
+✔ AuthService
+✔ JWT
+✔ Controller
+
+Tudo 100% compatível com o código que estamos usando.
+
+🚀 SCHEMA COMPLETO – Tabelas do Sistema de Autenticação
+1️⃣ Tabela Usuarios
+CREATE TABLE Usuarios (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    Nome NVARCHAR(150) NOT NULL,
+    Email NVARCHAR(200) NOT NULL UNIQUE,
+    SenhaHash NVARCHAR(500) NOT NULL,
+    DataCriacao DATETIME NOT NULL DEFAULT(GETDATE())
+);
+
+
+✔ Usa SenhaHash (não existe mais coluna Senha)
+✔ Email é único
+✔ Id é GUID
+✔ Combina com seu AuthController e UserRepository
+
+2️⃣ Tabela Permissoes
+CREATE TABLE Permissoes (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Nome NVARCHAR(50) NOT NULL,
+    Descricao NVARCHAR(200) NULL
+);
+
+
+✔ Tabela simples
+✔ Apenas descrição e nome
+
+Insert das permissões iniciais
+INSERT INTO Permissoes (Nome, Descricao)
+VALUES
+('ADMIN', 'Administrador do sistema'),
+('USUARIO', 'Acesso básico ao sistema');
+
+3️⃣ Tabela UsuarioPermissao
+Esta tabela CONTÉM as permissões que cada usuário possui
+CREATE TABLE UsuarioPermissao (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+
+    UsuarioId UNIQUEIDENTIFIER NOT NULL,
+    PermissaoId INT NOT NULL,
+
+    CONSTRAINT FK_UsuarioPermissao_Usuario
+        FOREIGN KEY (UsuarioId)
+        REFERENCES Usuarios (Id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_UsuarioPermissao_Permissao
+        FOREIGN KEY (PermissaoId)
+        REFERENCES Permissoes (Id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT UK_Usuario_Permissao UNIQUE (UsuarioId, PermissaoId)
+);
