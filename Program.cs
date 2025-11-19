@@ -15,9 +15,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 // AuthService
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// ==============================
-// ?? CONFIG JWT
-// ==============================
+// =========================================
+// JWT
+// =========================================
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -38,7 +38,9 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// CORS
+// =========================================
+// CORS — LIBERA O ANGULAR
+// =========================================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -49,13 +51,9 @@ builder.Services.AddCors(options =>
     );
 });
 
-// Controllers
+// Controllers e Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
-// ==============================
-// ?? SWAGGER COM JWT
-// ==============================
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -64,7 +62,6 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1"
     });
 
-    // Habilita JWT no Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -93,25 +90,32 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// CORS
-app.UseCors("AllowAngular");
+// =========================================
+// ORDEM CORRETA DO PIPELINE
+// =========================================
 
+// 1) HTTPS
 app.UseHttpsRedirection();
 
+// 2) Routing
 app.UseRouting();
 
-// ==============================
-// ?? ESSENCIAL PARA JWT!!!
-// ==============================
+// 3) CORS (DEVE VIR ENTRE ROUTING E AUTH)
+app.UseCors("AllowAngular");
+
+// 4) Auth (JWT)
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 5) Swagger (somente dev)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// 6) Controllers
 app.MapControllers();
 
+// 7) Run app
 app.Run();

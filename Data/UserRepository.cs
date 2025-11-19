@@ -37,23 +37,19 @@ namespace FinanblueBackend.Data
 
             try
             {
-                // CRIAR USUÁRIO
                 connection.Execute(sqlInsertUser, new
                 {
                     user.Id,
                     user.Nome,
                     user.Email,
                     SenhaHash = senhaHash
-                },
-                transaction: transaction);
+                }, transaction);
 
-                // PERMISSÃO PADRÃO
                 connection.Execute(sqlInsertPermission, new
                 {
                     UsuarioId = user.Id,
                     PermissaoId = permissaoPadraoId
-                },
-                transaction: transaction);
+                }, transaction);
 
                 transaction.Commit();
                 return newUserId;
@@ -66,14 +62,14 @@ namespace FinanblueBackend.Data
         }
 
         // ===============================
-        // LOGIN -> Buscar usuário por Email
+        // LOGIN -> Buscar usuário por Email (CORRIGIDO)
         // ===============================
         public Usuario GetUserByEmail(string email)
         {
             string sql =
                 @"SELECT Id, Nome, Email, SenhaHash 
                   FROM Usuarios 
-                  WHERE Email = @Email";
+                  WHERE LOWER(LTRIM(RTRIM(Email))) = LOWER(LTRIM(RTRIM(@Email)))";
 
             using IDbConnection connection = _dapper.CreateConnection();
             return connection.QueryFirstOrDefault<Usuario>(sql, new { Email = email });
@@ -95,9 +91,14 @@ namespace FinanblueBackend.Data
             return connection.Query<string>(sql, new { UsuarioId = usuarioId }).AsList();
         }
 
+        // ===============================
+        // Buscar usuário por ID (NECESSÁRIO)
+        // ===============================
         public Usuario GetUserById(Guid id)
         {
-            string sql = "SELECT Id, Nome, Email FROM Usuarios WHERE Id = @Id";
+            string sql = @"SELECT Id, Nome, Email 
+                           FROM Usuarios 
+                           WHERE Id = @Id";
 
             using IDbConnection connection = _dapper.CreateConnection();
             return connection.QueryFirstOrDefault<Usuario>(sql, new { Id = id });
