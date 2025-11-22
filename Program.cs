@@ -1,4 +1,5 @@
-﻿using SistemaCaixa.Data;
+﻿
+using SistemaCaixa.Data;
 using SistemaCaixa.Service;
 using Microsoft.OpenApi.Models;
 
@@ -17,8 +18,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // ========================
 // CORS – permitir Angular
 // ========================
-builder.Services.AddCors(options =>
-{
+builder.Services.AddCors(options => {
     options.AddPolicy("AllowAngular", policy =>
         policy
             .WithOrigins("http://localhost:4200")
@@ -33,10 +33,8 @@ builder.Services.AddCors(options =>
 // ========================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo {
         Title = "FinanblueBackend API",
         Version = "v1",
         Description = "API do Gilson usando .NET + Dapper"
@@ -55,11 +53,9 @@ app.UseCors("AllowAngular");
 
 app.UseRouting();
 
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
+    app.UseSwaggerUI(c => {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinanblueBackend API v1");
     });
 }
