@@ -1,7 +1,7 @@
-Ôªøusing FinanblueBackend.Data;
-using FinanblueBackend.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using SistemaCaixa.Data;
+using SistemaCaixa.Models;
+using SistemaCaixa.Service;
 
 namespace SistemaCaixa.Controllers
 {
@@ -64,10 +64,10 @@ namespace SistemaCaixa.Controllers
         {
             try
             {
-                // Verifica se o email j√° existe
+                // Verifica se o email j· existe
                 var existente = _userRepo.GetUserByEmail(dto.Email);
                 if (existente != null)
-                    return BadRequest("Email j√° est√° cadastrado.");
+                    return BadRequest("Email j· est· cadastrado.");
 
                 // Gera hash
                 string hash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
@@ -78,12 +78,12 @@ namespace SistemaCaixa.Controllers
                     Email = dto.Email
                 };
 
-                // 2 = Permiss√£o padr√£o (USUARIO)
+                // 2 = Permiss„o padr„o (USUARIO)
                 Guid idGerado = _userRepo.CreateUser(user, hash, permissaoPadraoId: 2);
 
                 return Created("", new
                 {
-                    mensagem = "Usu√°rio criado com sucesso",
+                    mensagem = "Usu·rio criado com sucesso",
                     userId = idGerado,
                     email = user.Email
                 });

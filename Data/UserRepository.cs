@@ -1,10 +1,11 @@
 ﻿using Dapper;
-using FinanblueBackend.Models;
+using SistemaCaixa.Data;
+using SistemaCaixa.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace FinanblueBackend.Data
+namespace SistemaCaixa.Data
 {
     public class UserRepository : IUserRepository
     {
@@ -62,7 +63,7 @@ namespace FinanblueBackend.Data
         }
 
         // ===============================
-        // LOGIN -> Buscar usuário por Email (CORRIGIDO)
+        // Buscar usuário por Email
         // ===============================
         public Usuario GetUserByEmail(string email)
         {
@@ -92,7 +93,7 @@ namespace FinanblueBackend.Data
         }
 
         // ===============================
-        // Buscar usuário por ID (NECESSÁRIO)
+        // Buscar usuário por ID
         // ===============================
         public Usuario GetUserById(Guid id)
         {
@@ -102,6 +103,14 @@ namespace FinanblueBackend.Data
 
             using IDbConnection connection = _dapper.CreateConnection();
             return connection.QueryFirstOrDefault<Usuario>(sql, new { Id = id });
+        }
+        public IEnumerable<Usuario> GetAllUsers()
+        {
+            using var conn = _dapper.CreateConnection();
+
+            const string sql = "SELECT * FROM Usuarios ORDER BY DataCriacao DESC";
+
+            return conn.Query<Usuario>(sql);
         }
     }
 }

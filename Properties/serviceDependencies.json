@@ -10,12 +10,7 @@
     },
     "mssql2": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:DefaultConnection2",
-      "dynamicId": null
-    },
-    "mssql3": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:DefaultConnection3",
+      "connectionId": "ConnectionStrings:ConnectionWork1",
       "dynamicId": null
     }
   }

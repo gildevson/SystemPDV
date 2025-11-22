@@ -1,4 +1,5 @@
-﻿using FinanblueBackend.Models;
+﻿using SistemaCaixa.Models;
+
 
 public interface IAuthService
 {

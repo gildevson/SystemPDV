@@ -1,11 +1,19 @@
-﻿using FinanblueBackend.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using SistemaCaixa.Models;
 using System;
 using System.Collections.Generic;
 
-public interface IUserRepository
+namespace SistemaCaixa.Data
 {
-    Usuario GetUserByEmail(string email);
-    Usuario GetUserById(Guid id);
-    List<string> GetPermissoes(Guid usuarioId);
-    Guid CreateUser(Usuario user, string senhaHash, int permissaoPadraoId);
+    public interface IUserRepository
+    {
+        Guid CreateUser(Usuario user, string senhaHash, int permissaoPadraoId);
+        Usuario GetUserByEmail(string email);
+        Usuario GetUserById(Guid id);
+        List<string> GetPermissoes(Guid usuarioId);
+        IEnumerable<Usuario> GetAllUsers();
+
+
+
+    }
 }

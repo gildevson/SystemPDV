@@ -1,40 +1,22 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using SistemaCaixa.Data;
+using SistemaCaixa.Service;
+using Microsoft.OpenApi.Models;
 
-// CONFIGURAÇÃO APPSETTINGS
-builder.Configuration
-    .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
+var builder = WebApplication.CreateBuilder(args);
 
-// PORTA FIXA PARA ANGULAR
-builder.WebHost.UseUrls("http://localhost:5000");
+// 🔥 CARREGAR appsettings.json (ESSENCIAL)
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-// SERVIÇOS
+// ========================
+// INJEÇÃO DE DEPENDÊNCIA
+// ========================
 builder.Services.AddSingleton<DbContextDapper>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// JWT
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
-            )
-        };
-    });
-
-builder.Services.AddAuthorization();
-
-// CORS – SOMENTE ANGULAR
+// ========================
+// CORS – permitir Angular
+// ========================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -42,26 +24,46 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
             .AllowAnyMethod()
+            .AllowCredentials()
     );
 });
 
+// ========================
+// Controllers e Swagger
+// ========================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FinanblueBackend API",
+        Version = "v1",
+        Description = "API do Gilson usando .NET + Dapper"
+    });
+});
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseRouting();
+// ========================
+// Pipeline
+// ========================
 app.UseCors("AllowAngular");
-app.UseAuthentication();
-app.UseAuthorization();
+
+// ❗ Não usar HTTPS enquanto testa local
+// app.UseHttpsRedirection();
+
+app.UseRouting();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinanblueBackend API v1");
+    });
 }
 
 app.MapControllers();
+
 app.Run();

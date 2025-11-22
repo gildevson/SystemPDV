@@ -1,8 +1,8 @@
 ﻿using System.Data;
-using Microsoft.Data.SqlClient;            // ✔ Driver moderno recomendado
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace FinanblueBackend.Data
+namespace SistemaCaixa.Data
 {
     public class DbContextDapper
     {
@@ -12,7 +12,7 @@ namespace FinanblueBackend.Data
         public DbContextDapper(IConfiguration config)
         {
             _config = config;
-            _connectionString = _config.GetConnectionString("DefaultConnection");
+            _connectionString = _config.GetConnectionString("ConnectionWork");
         }
 
         public IDbConnection CreateConnection()
